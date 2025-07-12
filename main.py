@@ -22,14 +22,12 @@ STORE_URL = "https://shop.amul.com/en"
 CATEGORY = ""
 REFRESH_INTERVAL = int(os.getenv("REFRESH_INTERVAL", 30))  # seconds
 PINCODE = os.getenv("PINCODE")
-PRODUCT_NAMES = [
-    "Amul High Protein Blueberry Shake, 200 mL | Pack of 30",
-    "Amul High Protein Plain Lassi, 200 mL | Pack of 30",
-    "Amul High Protein Buttermilk, 200 mL | Pack of 30",
-    "Amul High Protein Rose Lassi, 200 mL | Pack of 30",
-    "Amul High Protein Milk, 250 mL | Pack of 8",
-    "Amul Peanut Butter 'Creamy', 300 g"
-]
+PRODUCTS = [
+    "amul-high-protein-milk-250-ml-or-pack-of-8", 
+    "amul-high-protein-rose-lassi-200-ml-or-pack-of-30", 
+    "amul-high-protein-plain-lassi-200-ml-or-pack-of-30", 
+    "amul-high-protein-blueberry-shake-200-ml-or-pack-of-30", 
+    "amul-high-protein-buttermilk-200-ml-or-pack-of-30"]
 
 DUPLICATES = []
 
@@ -95,13 +93,13 @@ try:
                         product_data = data.get("data", [])
                         if product_data:
                             df = pd.DataFrame(product_data)
-                            FILTERED_PRODUCT_NAMES = [name for name in PRODUCT_NAMES if name not in DUPLICATES]
-                            for name in FILTERED_PRODUCT_NAMES:
-                                match = df[df['name'].str.strip().str.casefold() == name.strip().casefold()]
+                            FILTERED_PRODUCTS = [alias for alias in PRODUCTS if alias not in DUPLICATES]
+                            for alias in FILTERED_PRODUCTS:
+                                match = df[df['alias'].str.strip().str.casefold() == alias.strip().casefold()]
                                 if not match.empty:
                                     available = match.iloc[0]['available']
-                                    alias = match.iloc[0]['alias']
-                                    DUPLICATES.append(name)
+                                    name = match.iloc[0]['name']
+                                    DUPLICATES.append(alias)
                                     if available:
                                         STATUS = "✅ In Stock"
                                         URL = STORE_URL+f"/product/{alias}"

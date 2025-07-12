@@ -1,6 +1,6 @@
-# Amul Product Stock Checker
+# Product Stock Checker
 
-This script automates the process of checking the stock of specific Amul products on their online store and sends alerts via Telegram when a product is in stock.
+This script automates the process of checking the stock of specific products on an online store and sends alerts via Telegram when a product is in stock.
 
 ## Features
 
@@ -52,7 +52,7 @@ python main.py
 
 ## How it Works
 
-The script uses `selenium-wire` to intercept network requests made by the Amul website. It specifically looks for a request to `ms.products` which returns a JSON object containing product data. The script then parses this data to check the availability of the products listed in `PRODUCT_NAMES`.
+The script uses `selenium-wire` to intercept network requests made by the respective store website. It specifically looks for a request to `ms.products` which returns a JSON object containing product data. The script then parses this data to check the availability of the products listed in `PRODUCT_NAMES`.
 
 ## Contributing
 
