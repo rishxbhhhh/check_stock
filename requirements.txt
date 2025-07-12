@@ -1,4 +1,6 @@
 pandas
 requests
+blinker==1.6.2
+selenium
 selenium-wire
 python-dotenv

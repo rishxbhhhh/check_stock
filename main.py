@@ -7,6 +7,7 @@ import time
 from datetime import datetime
 from io import BytesIO
 
+import pytz
 import pandas as pd
 import requests
 from dotenv import load_dotenv
@@ -38,7 +39,7 @@ chat_ids = os.getenv("TELEGRAM_CHAT_IDS", "").split(",")
 print("REFRESH_INTERVAL: "+str(REFRESH_INTERVAL))
 LAST_UPDATE_ID = None
 
-BOT_CONTROLS = ''' ---Welcome to Check_Stock Bot---
+BOT_CONTROLS = ''' ---Welcome to Check_Stock Bot https://t.me/dgd7823dbwhwd23rbot---
 1. /start           - to resume all monitoring
 2. /stop            - to stop all monitoring
 3. /startoutofstock - to resume out of stock monitoring
@@ -149,7 +150,9 @@ try:
 
         if MONITORING:
             product_data = []
-            now = datetime.now()
+            now_utc = datetime.utcnow()
+            ist = pytz.timezone("Asia/Kolkata")
+            now_ist = pytz.utc.localize(now_utc).astimezone(ist)
             time_message = "🔍 Product Availability at " + now.strftime("%I:%M:%S %p %Z on %d-%m-%Y")
             print(time_message)
             send_telegram_alert(time_message, True)
