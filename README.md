@@ -1,8 +1,8 @@
-📦 Check_Stock Monitor — Telegram-Controlled Product Availability Tracker
+## 📦 Check_Stock Monitor — Telegram-Controlled Product Availability Tracker
 
 This project is a Python-based automation tool to monitor stock availability on a certain commodity website and send Telegram alerts in real time. It supports multi-user notifications, bot-controlled pause/resume, out-of-stock filtering, and custom intervals.
 
-🚀 Features
+## 🚀 Features
 - ✅ Real-time product availability monitoring using Selenium Wire
 - ✅ Alerts sent via Telegram to registered users
 - ✅ Supports multiple recipients with dynamic opt-in via /addme
@@ -16,7 +16,7 @@ This project is a Python-based automation tool to monitor stock availability on 
 - ✅ No need to install ChromeDriver explicitly when system Chrome is present
 - ✅ Easily extensible and modular codebase
 
-📲 Bot Controls
+## 📲 Bot Controls
 Interact with your Telegram bot to control the monitoring behavior:
 1. /start           - to resume all monitoring
 2. /stop            - to stop all monitoring
@@ -76,8 +76,8 @@ Run the script from your terminal:
 
 The script uses `selenium-wire` to intercept network requests made by the respective store website. It specifically looks for a request to `ms.products` which returns a JSON object containing product data. The script then parses this data to check the availability of the products listed in `PRODUCT_NAMES`.
 
-🧩 Feature Breakdown & Implementation Paths
-1. 🎛️ User-Specific Alert Preferences
+## 🧩 Future Additions, Feature Breakdown & Implementation Paths
+###1. 🎛️ User-Specific Alert Preferences
 Goal: Each Telegram user can customize the types of alerts they receive.
 
 Sub-features:
@@ -98,7 +98,7 @@ user_prefs = {
 - Parse commands like /mysettings, /addproduct, /silents, etc.
 - Filter alerts based on each user’s preferences during dispatch.
 
-2. 🔒 Admin-Only Control Features via Bot
+###2. 🔒 Admin-Only Control Features via Bot
 Goal: Restrict sensitive commands (e.g. global /stop, /setinterval) to admins only.
 
 Implementation Path:
@@ -111,7 +111,7 @@ else:
     send_telegram_alert("❌ You are not authorized to run this command", True)
 - Optionally implement /promote <user> and /demote <user> (admin-only)
 
-3. 💾 Persistent Opt-In Tracking via Disk or Database
+###3. 💾 Persistent Opt-In Tracking via Disk or Database
 Goal: Retain users who opt in via /addme and remove via /removeme.
 
 Options:
@@ -122,7 +122,7 @@ Implementation Path:
 - On /removeme, remove chat_id
 - Load on startup and update in-memory chat_ids or user_prefs
 
-4. 📊 Web Dashboard for Monitoring
+###4. 📊 Web Dashboard for Monitoring
 Goal: Visualize product status, user metrics, and system uptime.
 
 Options:
