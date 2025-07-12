@@ -43,8 +43,9 @@ BOT_CONTROLS = ''' ---Welcome to Check_Stock Bot---
 2. /stop            - to stop all monitoring
 3. /startoutofstock - to resume out of stock monitoring
 4. /stopoutofstock  - to stop out of stock monitoring
-5. /addme           - to add user to alerts
-6. /setinterval     - to set custom interval
+5. /setinterval     - to set custom interval
+6. /addme           - to add user to alerts
+7. /removeme        - to remove user from alerts
 '''
 
 def send_telegram_alert(message, disable_notification):
@@ -101,6 +102,11 @@ def check_telegram_commands():
                 if sender_id not in chat_ids:
                     chat_ids.append(sender_id)
                     send_telegram_alert("✅ You’ve been added to the alert list", False)
+            
+            elif message.lower() == "/removeme":
+                if sender_id in chat_ids:
+                    chat_ids.remove(sender_id)
+                    send_telegram_alert("✅ You’ve been removed from the alert list", False)
 
             elif message.lower() == "/stopoutofstock":
                 SEND_OUT_OF_STOCK = False
