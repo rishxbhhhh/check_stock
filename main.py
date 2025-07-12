@@ -153,7 +153,7 @@ try:
             now_utc = datetime.utcnow()
             ist = pytz.timezone("Asia/Kolkata")
             now_ist = pytz.utc.localize(now_utc).astimezone(ist)
-            time_message = "🔍 Product Availability at " + now.strftime("%I:%M:%S %p %Z on %d-%m-%Y")
+            time_message = "🔍 Product Availability at " + now_ist.strftime("%I:%M:%S %p %Z on %d-%m-%Y")
             print(time_message)
             send_telegram_alert(time_message, True)
 
