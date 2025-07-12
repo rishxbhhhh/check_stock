@@ -101,7 +101,7 @@ def check_telegram_commands():
             elif message.lower() == "/addme":
                 if sender_id not in chat_ids:
                     chat_ids.append(sender_id)
-                    send_telegram_alert("✅ You’ve been added to the alert list", False)
+                    send_telegram_alert("✅ You’ve been added to the alert list, hit /stop to leave this list.", False)
             
             elif message.lower() == "/removeme":
                 if sender_id in chat_ids:
