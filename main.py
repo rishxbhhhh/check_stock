@@ -25,16 +25,15 @@ PINCODE = os.getenv("PINCODE")
 REFRESH_INTERVAL = int(os.getenv("REFRESH_INTERVAL", 60))
 PRODUCTS = [
     "amul-high-protein-milk-250-ml-or-pack-of-8",
-    "amul-high-protein-rose-lassi-200-ml-or-pack-of-30",
-    "amul-high-protein-plain-lassi-200-ml-or-pack-of-30",
-    "amul-high-protein-blueberry-shake-200-ml-or-pack-of-30",
-    "amul-high-protein-buttermilk-200-ml-or-pack-of-30",
-    "amul-peanut-butter-creamy-300-g"
+    "amul-high-protein-rose-lassi-200-ml-or-pack-of-30"
+    # "amul-high-protein-plain-lassi-200-ml-or-pack-of-30",
+    # "amul-high-protein-blueberry-shake-200-ml-or-pack-of-30",
+    # "amul-high-protein-buttermilk-200-ml-or-pack-of-30"
 ]
 
 DUPLICATES = []
 MONITORING = True
-SEND_OUT_OF_STOCK = True
+SEND_OUT_OF_STOCK = False
 chat_ids = os.getenv("TELEGRAM_CHAT_IDS", "").split(",")
 print("REFRESH_INTERVAL: "+str(REFRESH_INTERVAL))
 LAST_UPDATE_ID = None
@@ -130,12 +129,12 @@ driver = webdriver.Chrome(options=options)
 try:
     # Step 1: Open page and enter pincode once
     driver.get(STORE_URL + CATEGORY)
-    time.sleep(2)
+    time.sleep(3)
 
     try:
         pincode_input = driver.find_element(By.ID, "search")
         pincode_input.send_keys(PINCODE)
-        time.sleep(2)
+        time.sleep(3)
         suggestion = driver.find_element(By.XPATH, f"//a[contains(@class, 'searchitem-name')]//p[text()='{PINCODE}']")
         driver.requests.clear()
         suggestion.click()
@@ -212,7 +211,7 @@ try:
             DUPLICATES.clear()
             driver.requests.clear()
             driver.refresh()
-            time.sleep(2)
+            time.sleep(3)
 
 finally:
     driver.quit()
