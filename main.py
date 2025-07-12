@@ -6,6 +6,7 @@ import os
 import time
 from datetime import datetime
 from io import BytesIO
+import threading
 
 import pytz
 import pandas as pd
@@ -78,6 +79,8 @@ def check_telegram_commands():
         for update in data.get("result", []):
             LAST_UPDATE_ID = update["update_id"]
             message = update.get("message", {}).get("text", "").strip()
+            first_name = update.get("message", {}).get("chat", {}).get("first_name").strip()
+            username = update.get("message", {}).get("chat", {}).get("username").strip()
             sender_id = str(update.get("message", {}).get("chat", {}).get("id"))
 
             if not message:
@@ -85,36 +88,36 @@ def check_telegram_commands():
 
             if message.lower() == "/stop":
                 MONITORING = False
-                send_telegram_alert("⏸️ Monitoring paused by user, waiting for /start ...", True)
+                send_telegram_alert(f"⏸️ Monitoring paused by user: {first_name} (@{username}), waiting for /start ...", True)
 
             elif message.lower() == "/start":
                 MONITORING = True
-                send_telegram_alert("▶️ Monitoring resumed by user", True)
+                send_telegram_alert(f"▶️ Monitoring resumed by user: {first_name} (@{username})", True)
 
             elif message.startswith("/setinterval "):
                 try:
                     REFRESH_INTERVAL = int(message.split()[1])
-                    send_telegram_alert(f"⏱️ Interval set to {REFRESH_INTERVAL}s", True)
+                    send_telegram_alert(f"⏱️ Interval set to {REFRESH_INTERVAL}s by user: {first_name} (@{username})", True)
                 except:
                     send_telegram_alert("❌ Invalid interval format", True)
 
             elif message.lower() == "/addme":
                 if sender_id not in chat_ids:
                     chat_ids.append(sender_id)
-                    send_telegram_alert("✅ You’ve been added to the alert list, hit /stop to leave this list.", False)
+                    send_telegram_alert(f"✅ User: {first_name} (@{username}) added to the alert list", False)
             
             elif message.lower() == "/removeme":
                 if sender_id in chat_ids:
                     chat_ids.remove(sender_id)
-                    send_telegram_alert("✅ You’ve been removed from the alert list", False)
+                    send_telegram_alert(f"✅ User: {first_name} (@{username}) removed from the alert list", False)
 
             elif message.lower() == "/stopoutofstock":
                 SEND_OUT_OF_STOCK = False
-                send_telegram_alert("🚫 Out-of-stock alerts disabled", True)
+                send_telegram_alert(f"🚫 Out-of-stock alerts disabled by user: {first_name} (@{username})", True)
 
             elif message.lower() == "/startoutofstock":
                 SEND_OUT_OF_STOCK = True
-                send_telegram_alert("✅ Out-of-stock alerts enabled", True)
+                send_telegram_alert(f"✅ Out-of-stock alerts enabled by user: {first_name} (@{username})", True)
 
     except Exception as e:
         print("⚠️ Telegram command check failed:", e)
@@ -144,9 +147,16 @@ try:
 
     # Step 2: Loop to refresh and check availability
     send_telegram_alert(BOT_CONTROLS, False)
-    while True:
-        check_telegram_commands()
 
+    def telegram_command_listener():
+        while True:
+            check_telegram_commands()
+            time.sleep(3)
+
+    # Start the Telegram listener in a separate thread
+    listener_thread = threading.Thread(target=telegram_command_listener, daemon=True)
+    listener_thread.start()
+    while True:
         if MONITORING:
             product_data = []
             now_utc = datetime.utcnow()
@@ -210,7 +220,10 @@ try:
             time.sleep(REFRESH_INTERVAL)
             DUPLICATES.clear()
             driver.requests.clear()
-            driver.refresh()
+            try:
+                driver.refresh()
+            except TimeoutError:
+                continue
             time.sleep(3)
 
 finally:
