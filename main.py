@@ -129,7 +129,10 @@ options.add_argument("--disable-gpu")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 options.add_argument("--remote-debugging-port=9222")
-driver = webdriver.Chrome(options=options)
+options.add_argument("--no-proxy-server")
+options.add_argument("--proxy-server='direct://'")
+options.add_argument("--proxy-bypass-list=*")
+driver = webdriver.Chrome(options=options, seleniumwire_options={'proxy': {'http': None, 'https': None, 'no_proxy': '*'}})
 
 try:
     # Step 1: Open page and enter pincode once
