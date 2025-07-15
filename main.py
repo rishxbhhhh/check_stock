@@ -217,7 +217,8 @@ try:
                                         available = match.iloc[0]['available']
                                         name = match.iloc[0]['name']
                                         DUPLICATES.append(alias)
-
+                                        send_telegram_alert(available,False)
+                                        send_telegram_alert(type(available),False)
                                         if available:
                                             STATUS = "✅ In Stock"
                                             URL = STORE_URL + f"/product/{alias}"
