@@ -4,6 +4,7 @@ import gzip
 import json
 import os
 import time
+import subprocess
 from datetime import datetime
 from io import BytesIO
 import threading
@@ -18,6 +19,20 @@ from seleniumwire import webdriver
 
 # Load environment variables
 load_dotenv()
+def get_git_output(cmd):
+    return subprocess.check_output(cmd.split()).decode().strip()
+
+props = {
+    "git.commit.id": get_git_output("git rev-parse HEAD"),
+    "git.commit.time": get_git_output("git show -s --format=%ci HEAD"),
+    "git.branch": get_git_output("git rev-parse --abbrev-ref HEAD"),
+    "git.commit.message": get_git_output("git log -1 --pretty=%B"),
+    "git.build.time": datetime.utcnow().isoformat() + "Z"
+}
+
+with open("git.properties", "w") as f:
+    for key, value in props.items():
+        f.write(f"{key}={value}\n")
 
 # Configuration
 STORE_URL = "https://shop.amul.com/en"
@@ -26,9 +41,9 @@ PINCODE = os.getenv("PINCODE")
 REFRESH_INTERVAL = int(os.getenv("REFRESH_INTERVAL", 60))
 PRODUCTS = [
     "amul-high-protein-milk-250-ml-or-pack-of-8",
-    "amul-high-protein-rose-lassi-200-ml-or-pack-of-30"
-    # "amul-high-protein-plain-lassi-200-ml-or-pack-of-30",
-    # "amul-high-protein-blueberry-shake-200-ml-or-pack-of-30",
+    "amul-high-protein-rose-lassi-200-ml-or-pack-of-30",
+    "amul-high-protein-plain-lassi-200-ml-or-pack-of-30",
+    "amul-high-protein-blueberry-shake-200-ml-or-pack-of-30"
     # "amul-high-protein-buttermilk-200-ml-or-pack-of-30"
 ]
 
@@ -86,7 +101,13 @@ def check_telegram_commands():
             if not message:
                 continue
 
-            if message.lower() == "/stop":
+            if message.lower() == "/info":
+                f = open("git.properties", "r")        # Open the file
+                contents = f.read()                    # Read the content
+                send_telegram_alert(contents, True)    # Do something with the content
+                f.close()
+            
+            elif message.lower() == "/stop":
                 MONITORING = False
                 send_telegram_alert(f"⏸️ Monitoring paused by user: {first_name} (@{username}), waiting for /start ...", True)
 
