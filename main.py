@@ -215,10 +215,13 @@ try:
                                     match = df[df['alias'].str.strip().str.casefold() == alias.strip().casefold()]
                                     if not match.empty:
                                         available = match.iloc[0]['available']
+                                        inventory_quantity = match.iloc[0]['inventory_quantity']
                                         name = match.iloc[0]['name']
                                         DUPLICATES.append(alias)
-                                        send_telegram_alert(available,False)
-                                        send_telegram_alert(type(available),False)
+                                        print(available)
+                                        print(type(available))
+                                        print(inventory_quantity)
+                                        print(type(inventory_quantity))
                                         if available:
                                             STATUS = "✅ In Stock"
                                             URL = STORE_URL + f"/product/{alias}"
