@@ -180,9 +180,10 @@ try:
             time.sleep(3)
 
     # Start the Telegram listener in a separate thread
-    listener_thread = threading.Thread(target=telegram_command_listener, daemon=True)
-    listener_thread.start()
+    # listener_thread = threading.Thread(target=telegram_command_listener, daemon=True)
+    # listener_thread.start()
     while True:
+        check_telegram_commands()
         if MONITORING:
             product_data = []
             now_utc = datetime.utcnow()
